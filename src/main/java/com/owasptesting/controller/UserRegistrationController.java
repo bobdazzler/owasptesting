@@ -1,53 +1,65 @@
 package com.owasptesting.controller;
 
-import com.owasptesting.model.User;
-import com.owasptesting.service.UserRegistrationService;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.Response;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.List;
+import com.owasptesting.config.KeycloakProvider;
+import com.owasptesting.model.User;
+import com.owasptesting.service.KeycloakAdminClientService;
 
 @RestController
+@RequestMapping("/public")
 public class UserRegistrationController {
-    Logger logger = LoggerFactory.getLogger(UserRegistrationController.class);
-    @Autowired
-    private UserRegistrationService userRegistrationService;
+	Logger logger = LoggerFactory.getLogger(UserRegistrationController.class);
+	private final KeycloakAdminClientService kcAdminClient;
 
-    @GetMapping("/")
-    public ModelAndView index() {
-        return new ModelAndView("login");
-    }
+	private final KeycloakProvider kcProvider;
 
-    @GetMapping("/login")
-    public ModelAndView showLogin() {
-        return new ModelAndView("login");
-    }
+	public UserRegistrationController(KeycloakAdminClientService kcAdminClient, KeycloakProvider kcProvider) {
+		this.kcProvider = kcProvider;
+		this.kcAdminClient = kcAdminClient;
+	}
 
-    @GetMapping("/registration")
-    public ModelAndView showRegisterationPage(Model model) {
-        model.addAttribute("user", new User());
-        return new ModelAndView("signup_form");
-    }
+	@PostMapping("/create")
+	public Response createUser(@RequestBody User user) {
+		
+		return kcAdminClient.createUser(user);
+	}
 
-    @PostMapping("/save")
-    public String registerUserAccount(User user) {
-        if (userRegistrationService.checkExistingUser(user.getEmail()) != null) {
-            return "User exist";
-        }
-        userRegistrationService.save(user);
-        return "user saved";
-    }
-    @RolesAllowed("admin")
-    @GetMapping("Customers")
-    public List<User> getAllUsers() {
-        return userRegistrationService.findAll();
-    }
+	@PostMapping("/login")
+	public ResponseEntity<AccessTokenResponse> login(@RequestBody User user) {
+		Keycloak keycloak = kcProvider.newKeycloakBuilderWithPasswordCredentials(user.getUsername(), user.getPassword())
+				.build();
 
+		AccessTokenResponse accessTokenResponse = null;
+		try {
+			accessTokenResponse = keycloak.tokenManager().getAccessToken();
+			return ResponseEntity.status(HttpStatus.OK).body(accessTokenResponse);
+		} catch (BadRequestException ex) {
+			logger.warn("invalid account. User probably hasn't verified email.", ex);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(accessTokenResponse);
+		}
+
+	}
+
+	@GetMapping("/")
+	public String index() {
+		return "Oxygen";
+	}
+
+	@GetMapping("/access-denied-response")
+	public String accessDenied() {
+		return "Access Denied... You don't have permission.";
+	}
 }

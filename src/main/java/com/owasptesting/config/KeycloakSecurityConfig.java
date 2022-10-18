@@ -1,6 +1,5 @@
 package com.owasptesting.config;
 
-import com.owasptesting.service.CustomUserDetailsService;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -8,40 +7,21 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @KeycloakConfiguration
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true, securedEnabled = true)
 @Import(KeycloakSpringBootConfigResolver.class)
 public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
 {
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService());
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
-    }
+  
     /**
      * Registers the KeycloakAuthenticationProvider with the authentication manager.
      */
@@ -51,6 +31,11 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
         authenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(authenticationProvider);
     }
+    @Bean
+    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
+    return new KeycloakSpringBootConfigResolver();
+    }
+
 
     /**
      * Defines the session authentication strategy.
@@ -72,21 +57,12 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
         super.configure(http);
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/home").authenticated()
-                .and()
-                .authenticationProvider(keycloakAuthenticationProvider())
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/home")
-                .permitAll()
-                .and()
-                .logout()
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .permitAll();
+                .antMatchers("public/**").permitAll()
+                .antMatchers("admin/**").hasAnyRole("admin")
+                .antMatchers("partner/**").hasAnyRole("partner")
+                .antMatchers("customers/**").hasAnyRole("customers")
+                .and().exceptionHandling().accessDeniedPage("/access-denied-response");
+        http.csrf().disable();
+     
     }
 }

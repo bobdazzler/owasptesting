@@ -1,75 +1,60 @@
 package com.owasptesting.model;
 
-import org.springframework.lang.NonNull;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-
-@Entity
-@Table(name="registereduser", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @NonNull
-    @Column(name = "user_name")
-    private String userName;
-    @NonNull
-    @Column(name = "email")
-    private String email;
-    @NonNull
-    @Column(name = "mobile_number")
-    private String mobileNumber;
-    @NonNull
-    @Column(name = "password")
-    private String passWord;
+	String username;
+	String password;
+	String email;
+	String firstname;
+	String lastname;
+	
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public String getUserName() {
-        return userName;
-    }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-    public String getPassWord() {
-        return passWord;
-    }
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-    public User() {
-    }
-    public User(int id, String userName, String email, String mobileNumber, String passWord) {
-        this.id = id;
-        this.userName = userName;
-        this.email = email;
-        this.mobileNumber = mobileNumber;
-        this.passWord = passWord;
-    }
-    public User(String userName, String email, String mobileNumber, String passWord) {
-        this.userName = userName;
-        this.email = email;
-        this.mobileNumber = mobileNumber;
-        this.passWord = passWord;
-    }
+	public User(String username, String password, String email, String firstname, String lastname) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstname = firstname;
+		this.lastname = lastname;
+	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
 
 }
