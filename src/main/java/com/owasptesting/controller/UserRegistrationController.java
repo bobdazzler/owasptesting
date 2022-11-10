@@ -1,7 +1,6 @@
 package com.owasptesting.controller;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.owasptesting.config.KeycloakProvider;
 import com.owasptesting.model.User;
 import com.owasptesting.service.KeycloakAdminClientService;
@@ -32,9 +30,13 @@ public class UserRegistrationController {
 	}
 
 	@PostMapping("/create")
-	public Response createUser(@RequestBody User user) {
-		
-		return kcAdminClient.createUser(user);
+	public void createUser(@RequestBody User user) {
+	//	try {
+			kcAdminClient.createUser(user);
+		// return ResponseEntity.ok( );
+	//	}catch(DataAccessException e) {
+		//	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+		//}
 	}
 
 	@PostMapping("/login")
