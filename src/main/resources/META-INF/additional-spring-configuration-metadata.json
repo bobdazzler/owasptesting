@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "keyclaok.use-resource-role-mappings",
+    "type": "java.lang.String",
+    "description": "A description for 'keyclaok.use-resource-role-mappings'"
+  },
+  {
+    "name": "admin-user",
+    "type": "java.lang.String",
+    "description": "A description for 'admin-user'"
+  },
+  {
+    "name": "admin-password",
+    "type": "java.lang.String",
+    "description": "A description for 'admin-password'"
+  },
+  {
+    "name": "KEYCLOAK_ADMIN_CLI",
+    "type": "java.lang.String",
+    "description": "A description for 'KEYCLOAK_ADMIN_CLI'"
+  },
+  {
+    "name": "keycloak-admin-cli",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak-admin-cli'"
+  },
+  {
+    "name": "keycloak-realm-master",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak-realm-master'"
+  }
+]}

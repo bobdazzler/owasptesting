@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<meta name="viewport"
+	content="width = device-width, initial-scale = 1, shrink-to-fit = no">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link href="custom.css" type="text/css" rel="stylesheet">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<title>PayMyBuddy App</title>
+</head>
+<body class="container p-1 my-4 bg-white text-white text-center">
+	<div class="container p-1 my-1 bg-dark">
+		<p>Owasp Testing</p>
+		<div class="card">
+			<p th:if="${loginError}" class="alert alert-error"></p>
+			<p th:if="${logoutSucess}" class="alert alert-success">
+
+			<form th:action="@{/login}" method="post">
+				<div
+					class="card body py-5 mr-5 ml-5 pl-5 pr-5 my-5 border border-secondary">
+					<div class="container my-3">
+						<button type="button"
+							class="h3 mb-2 mt-2 fw-normal btn btn-success">Owasp Testing</button>
+					</div>
+					<div th:if="${param.error}">
+						<div class="alert alert-danger">Invalid email or password.</div>
+					</div>
+					<div th:if="${param.logout}">
+						<div class="alert alert-info">You have been logged out.</div>
+					</div>
+					
+					<div class="form-group text-black ">
+						<input type="email" class="form-control" name="username"
+							placeholder="Email">
+					</div>
+					<div class="form-group text-black">
+						<input type="password" name="password" class="form-control"
+							placeholder="Password">
+
+					</div>
+					<div class="checkbox mt-4">
+						<label class="text-dark"> <input type="checkbox"
+							class="check-font" checked value="remember-me"> Remember
+							me
+						</label>
+					</div>
+					<div>
+						<button type="submit"
+							class="h3 mb-3 mt-3 fw-normal btn btn-success">Log In</button>
+					</div>
+
+					<div class="form-group">
+						<span class="text-success">New user? <a
+							href="signup_form.html" th:href="@{/registration}">Register
+								here</a></span>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
